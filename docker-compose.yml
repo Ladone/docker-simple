@@ -1,0 +1,36 @@
+version: '3.7'
+
+volumes:
+  mysql_data:
+
+services:
+  app:
+    build: .
+    restart: always
+    ports:
+      - '9000:9000'
+    volumes:
+      - './html:/var/www/html'
+
+  web:
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - './configs/nginx.conf:/etc/nginx/conf.d/default.conf'
+      - './html/:/var/www/html'
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_DATABASE=samplesql
+      - MYSQL_USER=samplesql
+      - MYSQL_PASSWORD=samplesqlsql
+      - MYSQL_ROOT_PASSWORD=samplesqlsql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
